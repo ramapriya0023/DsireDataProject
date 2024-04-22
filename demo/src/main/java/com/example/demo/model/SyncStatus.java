@@ -14,9 +14,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Data
-@Getter
-@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "sync_data")
