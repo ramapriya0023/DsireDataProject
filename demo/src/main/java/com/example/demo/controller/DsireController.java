@@ -24,11 +24,16 @@ public class DsireController {
 	@PostMapping("/sync-data")
 	public ResponseEntity<MasterResponse<String>> getDataAndStore() {
 		try {
-			
+			dsireService.validateLastSync();
 			dsireService.getDataAndStore();
+			
 			MasterResponse<String> response = new MasterResponse<>(true, HttpStatus.OK.value(),"Data fetching and storing process initiated.",null);
 			return ResponseEntity.ok(response);
-		} catch (Exception e) {
+		} catch (IllegalCallerException e) {
+			MasterResponse<String>  response = new MasterResponse<>(false,HttpStatus.BAD_REQUEST.value(),e.getMessage(),null);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		} 
+		catch (Exception e) {
 			MasterResponse<String>  response = new MasterResponse<>(false,HttpStatus.INTERNAL_SERVER_ERROR.value(),e.getMessage(),null);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}

@@ -54,10 +54,7 @@ public class DsireService {
 	@Async
 	public void getDataAndStore() {
 
-		SyncStatus lastSync = syncService.lastSyncStatus();
-		if (lastSync.getProgress() == ProgressEnum.INPROGRESS || lastSync.getProgress().equals(ProgressEnum.STARTED)) {
-			throw new IllegalCallerException("Sync already in progress!");
-		}
+		
 
 		SyncStatus lastSuccessSync = syncService.lastSyncedOn();
 		String apiUrl;
@@ -111,6 +108,14 @@ public class DsireService {
 		} catch (Exception e) {
 			syncService.updateProgress(createdSync.getId(), ProgressEnum.FAILED);
 			e.printStackTrace();
+		}
+	}
+
+	public void validateLastSync() {
+		SyncStatus lastSync = syncService.lastSyncStatus();
+		log.info("last sync {}",lastSync);
+		if (lastSync != null && (lastSync.getProgress() == ProgressEnum.INPROGRESS || lastSync.getProgress() == ProgressEnum.STARTED)) {
+			throw new IllegalCallerException("Sync already in progress!");
 		}
 	}
 
